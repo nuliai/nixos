@@ -21,7 +21,7 @@
       embeddedTheme = "astronaut";
       themeConfig = {
         General = ''
-          HeaderText="请使用密码解锁"
+          HeaderText="请使用指纹或密码解锁"
         '';
       };
     })

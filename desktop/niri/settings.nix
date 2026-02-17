@@ -1,104 +1,75 @@
 {
-    unify.home = {
-        hostConfig,
-        lib,
-        pkgs,
-        ...
-    }: {
-        programs.niri.settings = {
-            # keep-sorted start block=yes newline_separated=yes
-            animations = {
-                window-open.kind = {
-                    easing = {
-                        curve = "ease-out-expo";
-                        duration-ms = 250;
-                    };
-                };
-                window-close.kind = {
-                    easing = {
-                        curve = "ease-out-quad";
-                        duration-ms = 250;
-                    };
-                };
-                exit-confirmation-open-close.enable = false;
-            };
+  pkgs,
+  lib,
+  config,
+  ...
+}:
+{
+  programs.niri.settings = {
+    spawn-at-startup = [
+      {
+        command = [
+          "wl-paste"
+          "--watch"
+          "cliphist"
+          "store"
+        ];
+      }
+      {
+        command = [
+          "bash"
+          "-c"
+          "echo 'Xft.dpi: 144' | xrdb -merge"
+        ];
+      }
+      { command = [ "swww-daemon" ]; }
+    ];
+    prefer-no-csd = true;
 
-            environment = {
-                # for electron apps
-                NIXOS_OZONE_WL = "1";
-            };
-
-            hotkey-overlay = {
-                skip-at-startup = true;
-                hide-not-bound = true;
-            };
-
-            input.touchpad = {
-                tap-button-map = "left-right-middle";
-                scroll-factor = 0.75;
-                dwt = true;
-            };
-
-            layer-rules = [
-                {
-                    matches = [{namespace = "quickshell:notification";}];
-                    block-out-from = "screencast";
-                }
-            ];
-
-            layout = {
-                always-center-single-column = true;
-                default-column-width.proportion = 0.5;
-                focus-ring = {
-                    enable = true;
-                    width = 2;
-                };
-
-                struts.top = -8;
-
-                tab-indicator = {
-                    enable = true;
-                    hide-when-single-tab = true;
-                    gap = -16;
-                    gaps-between-tabs = 4;
-                    width = 10;
-                    corner-radius = 3;
-                    length.total-proportion = 0.15;
-                    position = "top";
-                };
-
-                background-color = "#000000";
-            };
-
-            outputs."eDP-1" = {
-                mode = {
-                    height = 1800;
-                    width = 2880;
-                    refresh = 60.001;
-                };
-
-                scale = 1.5;
-            };
-
-            overview = {
-                zoom = 0.4;
-            };
-
-            prefer-no-csd = true;
-
-            screenshot-path = "${hostConfig.dirs.downloads}/captures/linux/%Y-%m-%d (%H-%M-%S).png";
-
-            workspaces = {
-                "Acad" = {};
-                "Browse" = {};
-                "Code" = {};
-            };
-
-            xwayland-satellite = {
-                enable = true;
-                path = lib.getExe pkgs.xwayland-satellite-unstable;
-            };
-            # keep-sorted end
-        };
+    hotkey-overlay = {
+      skip-at-startup = true;
+      hide-not-bound = true;
     };
+    xwayland-satellite = {
+      enable = true;
+      path = lib.getExe pkgs.xwayland-satellite;
+    };
+    gestures.hot-corners.enable = false;
+
+    layout = {
+      gaps = 4;
+      background-color = "transparent";
+      center-focused-column = "on-overflow";
+      always-center-single-column = true;
+      preset-column-widths = [
+        { proportion = 0.5; }
+        { proportion = 0.7; }
+        { proportion = 1.0; }
+      ];
+      default-column-width = {
+        proportion = 0.7;
+      };
+      focus-ring = {
+        enable = true;
+        width = 3;
+        active.gradient = {
+          angle = 45;
+          from = "#${config.lib.stylix.colors.base06}";
+          relative-to = "window";
+          to = "#${config.lib.stylix.colors.base07}";
+        };
+        inactive.color = "#${config.lib.stylix.colors.base03}";
+      };
+      border.enable = false;
+    };
+
+    input = {
+      focus-follows-mouse = {
+        enable = true;
+        max-scroll-amount = "10%";
+      };
+      touchpad.natural-scroll = true;
+      keyboard.xkb.options = "caps:escape";
+    };
+  };
 }

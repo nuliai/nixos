@@ -21,7 +21,7 @@
   };
 
   system = {
-    stateVersion = "25.05"; # Did you read the comment?
+    stateVersion = "25.11"; # Did you read the comment?
     autoUpgrade.channel = "https://mirrors.ustc.edu.cn/nix-channels/nixos-unstable";
   };
 }

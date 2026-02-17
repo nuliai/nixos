@@ -11,7 +11,11 @@
     nix-output-monitor
     unrar
     mesa
+    # intel-vaapi-driver
+    # bibata-cursors
     ffmpeg
+    # kdePackages.ksshaskpass
+
   ];
 
   programs.nix-ld.enable = true;

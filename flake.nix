@@ -1,43 +1,11 @@
 {
   description = "A simple NixOS flake";
-
-  outputs =
-    { self, nixpkgs, ... }@inputs:
-    let
-      userName = "nuli";
-      hostName = "nixos";
-    in
-    {
-      nixosConfigurations.${hostName} = nixpkgs.lib.nixosSystem rec {
-        system = "x86_64-linux";
-        specialArgs = {
-          my-pkgs = inputs.myNixpkgs.packages.${system};
-          inherit
-            self
-            inputs
-            userName
-            hostName
-            ;
-        };
-        modules = [
-          ./host/configuration.nix
-          inputs.home-manager.nixosModules.default
-
-        ];
-      };
-    };
   inputs = {
     # NixOS 官方软件源，这里使用 nixos-25.05 分支
     nixpkgs.url = "nixpkgs/nixos-unstable";
-
     quickshell = {
       url = "git+https://git.outfoxxed.me/quickshell/quickshell";
       inputs.nixpkgs.follows = "nixpkgs";
-    };
-    niri-shell = {
-      url = "/mnt/HOUSE/dev/others/niri-shell";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.quickshell.follows = "quickshell";
     };
     niri = {
       url = "github:sodiboo/niri-flake";
@@ -67,4 +35,33 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
+  outputs =
+    { self, nixpkgs, ... }@inputs:
+    let
+      userName = "nuli";
+      hostName = "nixos";
+    in
+    {
+      nixosConfigurations.${hostName} = nixpkgs.lib.nixosSystem rec {
+        system = "x86_64-linux";
+        specialArgs = {
+          # pkgs-stable = import nixpkgs-stable {
+          #   inherit system;
+          #   config.allowUnfree = true;
+          # };
+          my-pkgs = inputs.myNixpkgs.packages.${system};
+          inherit
+            self
+            inputs
+            userName
+            hostName
+            ;
+        };
+        modules = [
+          ./host/configuration.nix
+          inputs.home-manager.nixosModules.default
+
+        ];
+      };
+    };
 }
